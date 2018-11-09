@@ -7,20 +7,20 @@ ___
 1. Prepare at least 2 machines
     - master
     - node
-2. Install updates and docker at all nodes
+1. Install updates and docker at all nodes
    ```sh
    sudo apt update && sudo apt upgrade -y && sudo apt install -y docker.io 
    ```
-3. Add current user to docker group 
+1. Add current user to docker group 
    ```sh 
    sudo usermod -aG docker $USER
    ```
-4. At manager machine initialize **swarm**
+1. At manager machine initialize **swarm**
    ```sh
    docker swarm init
    ```
    
-   output should look like:
+   > output should look like:
    
    ```
    Swarm initialized: current node (1g4sfirk42j2r0y50w9bgrrzt) is now a manager.
@@ -30,17 +30,17 @@ ___
    
    To add a manager to this swarm, run 'docker swarm join-token manager' and follow the instructions.
    ```
-5. At every node machine run command from manager output.
-6. Another important thing is that sometimes after host restart nodes do not connect to manager. To prevent this behavior we can use simple trick by adding ```docker ps``` command to cron and restart cron service
+1. At every node machine run command from manager output.
+1. Another important thing is that sometimes after host restart nodes do not connect to manager. To prevent this behavior we can use simple trick by adding `docker ps` command to cron and restart cron service
    ```sh
    sudo bash -c 'echo "* *     * * *   root    docker ps -a > /tmp/docker.state.txt" >> /etc/crontab'
    sudo service cron restart
    ```
-7. From now we have swarm initialized check that all nodes are connected
+1. From now we have swarm initialized check that all nodes are connected
     ```sh
     docker node ls
     ```
-    output should look like:
+    > output should look like:
     ```
     ID                            HOSTNAME            STATUS              AVAILABILITY        MANAGER STATUS      ENGINE VERSION
     1g4sfirk42j2r0y50w9bgrrzt *   vt-master           Ready               Active              Leader              18.06.1-ce
@@ -48,4 +48,7 @@ ___
     b0gw2m44msjla5bdso0gil0pj     vt-node-2           Ready               Active                                  18.06.1-ce
     ```
     
+---
+> [Readme](../README.md)
 
+> [Install Portainer](./portainer.md)
