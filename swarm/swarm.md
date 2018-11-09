@@ -1,8 +1,7 @@
 # Docker swarm installation guide
 ___
 
-**Prefered base server for me is Ubuntu 18.xx**
-___
+> **Prefered base server for me is Ubuntu 18.xx**
 
 1. Prepare at least 2 machines
     - master
