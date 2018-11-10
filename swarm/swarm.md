@@ -3,6 +3,8 @@ ___
 
 > **Prefered base server for me is Ubuntu 18.xx**
 
+> requirements: [Installed docker](../docker.md)
+
 1. Prepare at least 2 machines
     - master
     - node
