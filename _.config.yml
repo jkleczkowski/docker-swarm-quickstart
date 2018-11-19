@@ -7,3 +7,4 @@ include:
   - README.md
   - swarm.md
   - portainer.md
+  - gateway.md
