@@ -1,0 +1,42 @@
+version: '3.2'
+
+#networks:
+#  bridge:
+#    external: true
+
+services:
+  consul-server:
+    image: consul:latest
+    command: "consul agent -bootstrap -config-file /consul/config/config.json"
+    ports:
+      - target: 8500
+        published: 8500
+        mode: host
+    hostname: "consul-server"
+    volumes:
+      - c:/docker/volumes/consul:/consul/config
+      - c:/docker/volumes/consul/data:/consul/data
+  registrator:
+    image: gliderlabs/registrator:master
+    #networks:
+    #  bridge:
+#    volumes:
+#      - \\.\pipe\docker_engine:/tmp/docker.sock
+    command: -cleanup=true -deregister=always -explicit=true -internal=true -resync=5  consul://consul-server:8500
+  #
+  #
+  # fabio service
+  fabio-gw:
+    image: fabiolb/fabio
+    hostname: gateway
+    #networks:
+    #  bridge:
+    volumes:
+      - c:/docker/volumes/fabio:/etc/fabio
+    ports:
+      - target: 80
+        published: 9999
+        mode: host
+      - target: 10000
+        published: 10000
+        mode: host  

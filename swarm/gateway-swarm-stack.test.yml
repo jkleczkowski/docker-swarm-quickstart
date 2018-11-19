@@ -1,0 +1,90 @@
+version: "3.6"
+networks:
+  core-infra:
+    external: true
+  bridge:
+    external: true
+configs:
+  consul_agent.json: 
+    external: true
+
+services:
+  consul-server:
+    image: consul:latest
+    networks:
+      bridge:
+      core-infra:
+        aliases:
+          - consul-server
+    command: "consul agent -bootstrap -config-file /consul/config/config.json"
+    ports:
+      - target: 8500
+        published: 8500
+        mode: host
+    hostname: "consul-server"
+    volumes:
+      - /docker/volumes/consul:/consul/config
+      - /docker/volumes/consul/data:/consul/data
+    deploy:
+      mode: global
+      endpoint_mode: dnsrr
+      update_config:
+        parallelism: 1
+        failure_action: rollback
+        delay: 30s
+      restart_policy:
+        condition: any
+        delay: 5s
+        window: 120s
+      placement:
+        constraints:
+          - node.role == manager
+  registrator:
+    image: gliderlabs/registrator:master
+    networks:
+      core-infra:
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
+    deploy:
+      mode: global
+      endpoint_mode: dnsrr
+      update_config:
+        parallelism: 1
+        failure_action: rollback
+        delay: 30s
+      restart_policy:
+        condition: any
+        delay: 5s
+        window: 120s
+    command: -cleanup=true -deregister=always -explicit=true -internal=true -resync=5  consul://consul-server:8500
+
+  fabio-gw:
+    image: fabiolb/fabio
+    hostname: gateway
+    networks:
+      core-infra:
+    volumes:
+      - /docker/volumes/fabio:/etc/fabio
+    ports:
+      - target: 80
+        published: 80
+        mode: host
+      - target: 10000
+        published: 10000
+        mode: host
+    environment:
+      SERVICE_9998_NAME=fabio-cfg
+      SERVICE_9998_NAME=fabio
+    deploy:
+      mode: global
+      endpoint_mode: dnsrr
+      update_config:
+        parallelism: 1
+        failure_action: rollback
+        delay: 30s
+      restart_policy:
+        condition: any
+        delay: 5s
+        window: 120s
+      placement:
+        constraints: [node.role == manager]

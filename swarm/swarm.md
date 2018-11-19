@@ -48,7 +48,10 @@ ___
     m1umwdcbvghk43lbewzzmgsix     vt-node-1           Ready               Active                                  18.06.1-ce
     b0gw2m44msjla5bdso0gil0pj     vt-node-2           Ready               Active                                  18.06.1-ce
     ```
-    
+1. create `core-infra` network for comunicating with other containers
+   ```sh
+   docker network create core-infra --attachable -d overlay --subnet 10.4.0.0/16 --ip-range 10.4.0.0/16 --gateway 10.4.0.1
+   ```
 ---
 > [Readme](../README.md)
 

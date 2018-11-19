@@ -28,6 +28,7 @@ services:
       - ${DOCKER_VOL}/portainer_data:/data
     networks:
       - agent_network
+      - core-infra
     deploy:
       mode: replicated
       replicas: 1
@@ -38,4 +39,6 @@ networks:
   agent_network:
     driver: overlay
     attachable: true
+  core-infra:
+    external: true
 
